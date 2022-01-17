@@ -28,5 +28,6 @@ app.get('/api/emails/deactivate/:id', authenticateToken, emailController.deactiv
 
 app.get('/api/groups', authenticateToken, groupController.groupList)
 app.post('/api/groups', authenticateToken, groupController.addGroup)
+app.put('/api/groups/edit/:id', authenticateToken, groupController.editGroup)
 
 module.exports = app
