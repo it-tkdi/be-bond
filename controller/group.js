@@ -107,7 +107,7 @@ class groupController {
                     res.json({
                         statusCode: 200,
                         message: 'success retrieve group data.',
-                        data: row
+                        data: row[0]
                     })
                     return console.log('200 success retrieve group data.');
                 }
