@@ -27,6 +27,7 @@ app.put('/api/emails/edit/:id', authenticateToken, emailController.editEmail)
 app.get('/api/emails/deactivate/:id', authenticateToken, emailController.deactivateEmail)
 
 app.get('/api/groups', authenticateToken, groupController.groupList)
+app.get('/api/groups/:id', authenticateToken, groupController.getGroup)
 app.post('/api/groups', authenticateToken, groupController.addGroup)
 app.put('/api/groups/edit/:id', authenticateToken, groupController.editGroup)
 

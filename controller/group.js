@@ -92,6 +92,35 @@ class groupController {
         }
     }
 
+    static async getGroup(req, res) {
+        try {
+            const {id} = req.params
+
+            const sqlGetGroup = db.query('select * from tb_group where id = ?', [id], function(err, row) {
+                if(err) {
+                    res.json({
+                        statusCode: 500,
+                        message: err
+                    })
+                    return console.log('500 ' + err);
+                } else {
+                    res.json({
+                        statusCode: 200,
+                        message: 'success retrieve group data.',
+                        data: row
+                    })
+                    return console.log('200 success retrieve group data.');
+                }
+            })
+        } catch (error) {
+            res.json({
+                statusCode: 500,
+                message: error
+            })
+            return console.log('500 ' + error);
+        }
+    }
+
     static async editGroup(req, res) {
         const {groupName} = req.body
         const {id} = req.params
