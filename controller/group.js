@@ -1,3 +1,4 @@
+const e = require('express');
 const db = require('../config/db')
 
 class groupController {
@@ -47,7 +48,11 @@ class groupController {
                 }
             })
         } catch (error) {
-            
+            res.json({
+                statusCode: 500,
+                message: error
+            })
+            return console.log('500 ' + error);
         }
     }
 
@@ -76,6 +81,43 @@ class groupController {
                         })
                         return console.log('200 no data for group list.');
                     }
+                }
+            })
+        } catch (error) {
+            res.json({
+                statusCode: 500,
+                message: error
+            })
+            return console.log('500 ' + error);
+        }
+    }
+
+    static async editGroup(req, res) {
+        const {groupName} = req.body
+        const {id} = req.params
+
+        if(!groupName || !id) {
+            res.json({
+                statusCode: 400,
+                message: 'please fill in the form.'
+            })
+            return console.log('400 please fill in the form.');
+        }
+
+        try {
+            const sqlEditGroup = db.query('update tb_group set group_name = ? where id = ?', [groupName, id], function(err, row) {
+                if(err) {
+                    res.json({
+                        statusCode: 500,
+                        message: err
+                    })
+                    return console.log('500 ' + err);
+                } else {
+                    res.json({
+                        statusCode: 200,
+                        message: 'success edit group name.'
+                    })
+                    return console.log('200 success edit group name.');
                 }
             })
         } catch (error) {
