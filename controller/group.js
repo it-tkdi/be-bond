@@ -76,10 +76,10 @@ class groupController {
                         return console.log('200 success retrieve group list.');
                     } else {
                         res.json({
-                            statusCode: 200,
+                            statusCode: 404,
                             message: 'no data for group list.'
                         })
-                        return console.log('200 no data for group list.');
+                        return console.log('404 no data for group list.');
                     }
                 }
             })
