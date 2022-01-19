@@ -8,7 +8,7 @@ class emailController {
   static async emailList(req, res) {
     try {
       const sqlEmailList = db.query(
-        "select tb_email.*, tb_group.group_name from tb_email inner join tb_group on tb_email.group = tb_group.id where is_active = 1",
+        "select tb_email.*, tb_group.group_name from tb_email left join tb_group on tb_email.group = tb_group.id where is_active = 1",
         function (err, rows) {
           if (rows.length > 0) {
             res.json({
