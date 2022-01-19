@@ -1,23 +1,24 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 exports.authenticateToken = async (req, res, next) => {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) return res.json({
+  if (token == null)
+    return res.json({
       statusCode: 401,
-      message: 'token is null.'
-  })
+      message: "token is null.",
+    });
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-
-    if (err) return res.json({
+    if (err)
+      return res.json({
         statusCode: 403,
-        message: 'invalid token.'
-    })
+        message: "invalid token.",
+      });
 
-    req.user = user
+    req.user = user;
 
-    next()
-  })
-}
+    next();
+  });
+};
