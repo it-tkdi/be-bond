@@ -206,20 +206,19 @@ class emailController {
             function (err, rows) {
               for (let j = 0; j < rows.length; j++) {
                 // console.log(rows[j].email);
-                recipients.push(rows[j].email);
+                // recipients.push(rows[j].email);
+                toArr = [rows[j].email];
+                const emailData = { subject, body, toArr };
+                sendEmail(emailData, imageFile);
               }
-              // console.log(recipients);
-              // return recipients
-              toArr = recipients
-              const emailData = { subject, body, toArr };
-              sendEmail(emailData, imageFile);
-              res.json({
-                emailData,
-                imageFile,
-              });
             }
           );
         }
+        res.json({
+          statusCode: 200,
+          message: "email sent.",
+        });
+        return console.log("200 email sent.");
       } else {
         const emailData = { subject, body, toArr };
         if (emailData && imageFile) {
