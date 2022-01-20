@@ -224,18 +224,23 @@ class emailController {
         if (emailData && imageFile) {
           sendEmail(emailData, imageFile);
           res.json({
-            emailData,
-            imageFile,
+            statusCode: 200,
+            message: "email sent.",
           });
-          // console.log(emailData);
-          // console.log(imageFile);
+          return console.log("200 email sent.");
         } else {
-          console.log("request not complete.");
-          // console.log(emailData);
-          // console.log(imageFile);
+          res.json({
+            statusCode: 400,
+            message: 'request not complete.'
+          })
+          return console.log("400 request not complete.");
         }
       }
     } catch (error) {
+      res.json({
+        statusCode: 500,
+        message: error
+      })
       console.log("500 " + error);
     }
   }
