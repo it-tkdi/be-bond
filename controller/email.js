@@ -1,8 +1,10 @@
 const express = require("express");
 const db = require("../config/db");
 const { importToDB } = require("../util/import2db");
+const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../util/node-mailer");
+const { recipientsFn } = require("../util/recipientsFn");
 
 class emailController {
   static async emailList(req, res) {
@@ -194,26 +196,41 @@ class emailController {
   static async sendEmailToRcps(req, res) {
     try {
       const { subject, body, to } = req.body;
-      const imageFile = req.file;
+      let imageFile = req.file;
       let toArr = to.split(",");
 
-      let recipients = [];
+      // function to encode file data to base64 encoded string
+      function base64_encode(data) {
+        // read binary data
+        var bitmap = fs.readFileSync(data);
+        // convert binary data to base64 encoded string
+        const convertToBase64 = bitmap.toString("base64");
+
+        // fs.writeFile('base64image.txt', convertToBase64, function (err) {
+        //     if (err) return console.log(err);
+        //     console.log('file created.');
+        // })
+        return convertToBase64;
+      }
+      const base64str = base64_encode(
+        path.join(process.cwd(), `${imageFile.path}`)
+      );
+
+      // imageFile = base64str
+
       if (toArr[0].includes("@") == false) {
+        let recipients = [];
         for (let i = 0; i < toArr.length; i++) {
-          let sql = db.query(
-            "select * from tb_email where tb_email.group = ?",
-            [toArr[i]],
-            function (err, rows) {
-              for (let j = 0; j < rows.length; j++) {
-                // console.log(rows[j].email);
-                // recipients.push(rows[j].email);
-                toArr = [rows[j].email];
-                const emailData = { subject, body, toArr };
-                sendEmail(emailData, imageFile);
-              }
-            }
-          );
+          const rcpArr = await recipientsFn(toArr[i]);
+          for (let j = 0; j < rcpArr.length; j++) {
+            // console.log(rcpArr[j].email);
+            recipients.push(rcpArr[j].email);
+          }
         }
+        toArr = recipients;
+        const emailData = { subject, body, toArr };
+        sendEmail(emailData, imageFile);
+
         res.json({
           statusCode: 200,
           message: "email sent.",
@@ -231,16 +248,16 @@ class emailController {
         } else {
           res.json({
             statusCode: 400,
-            message: 'request not complete.'
-          })
+            message: "request not complete.",
+          });
           return console.log("400 request not complete.");
         }
       }
     } catch (error) {
       res.json({
         statusCode: 500,
-        message: error
-      })
+        message: error,
+      });
       console.log("500 " + error);
     }
   }
